@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Color Changer - Mousini</title>
+    <style> 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: background-color 0.5s ease, opacity 0.5s ease;
+        }
+
+        .popup {
+            background-color: #f0f0f0;
+            z-index: 3;
+            font-size: 2rem;
+            font-weight: bold;
+            padding: 20px;
+        }
+
+        .transition {
+            background-color: #e0e0e0;
+            z-index: 2;
+            font-size: 1.8rem;
+            display: none;
+            padding: 20px;
+        }
+
+        .main-page {
+            z-index: 1;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .main-page h1 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        #colorInput {
+            padding: 10px;
+            font-size: 1rem;
+            margin-top: 20px;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            border: 2px solid #333;
+            border-radius: 5px;
+        }
+
+        #musicPopup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            display: none;
+            z-index: 4;
+        }
+
+        #musicPopup button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #musicPopup button:hover {
+            background-color: #ddd;
+        }
+
+        /* Responsive adjustments */
+        @media screen and (max-width: 600px) {
+            .popup, .transition, .main-page h1 {
+                font-size: 1.5rem;
+            }
+
+            #colorInput {
+                width: 90%;
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            #musicPopup button {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media screen and (max-height: 500px) {
+            .popup, .transition, .main-page h1 {
+                font-size: 1.2rem;
+            }
+
+            #colorInput {
+                width: 70%;
+                font-size: 0.8rem;
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="screen popup" id="firstPopup">
+        Let us play with colors
+    </div>
+
+    <div class="screen transition" id="transitionScreen">
+        Let’s get started
+    </div>
+
+    <div class="screen main-page" id="mainPage">
+        <h1>Color Changer</h1>
+        <input 
+            type="text" 
+            id="colorInput" 
+            placeholder="Type a color name or hex code"
+        >
+    </div>
+
+    <div id="musicPopup">
+        <p>Mousini’s Color Changer wants to play music. Are you comfortable?</p>
+        <button id="yesButton">Yes</button>
+        <button id="noButton">No</button>
+    </div>
+
+    <audio id="audioPlayer" loop>
+        <source src="WhatsApp Audio 2024-11-30 at 01.09.06_53f67167.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        const firstPopup = document.getElementById('firstPopup');
+        const transitionScreen = document.getElementById('transitionScreen');
+        const mainPage = document.getElementById('mainPage');
+        const colorInput = document.getElementById('colorInput');
+        const musicPopup = document.getElementById('musicPopup');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const yesButton = document.getElementById('yesButton');
+        const noButton = document.getElementById('noButton');
+
+        // First popup disappears after 2 seconds
+        setTimeout(() => {
+            firstPopup.style.display = 'none';
+            transitionScreen.style.display = 'flex';
+        }, 2000);
+
+        // Transition screen disappears after 2 seconds
+        setTimeout(() => {
+            transitionScreen.style.display = 'none';
+            mainPage.style.display = 'flex';
+
+            // Show the music popup
+            musicPopup.style.display = 'block';
+        }, 4000);
+
+        // Music popup button handlers
+        yesButton.addEventListener('click', () => {
+            audioPlayer.play();
+            musicPopup.style.display = 'none';
+        });
+
+        noButton.addEventListener('click', () => {
+            musicPopup.style.display = 'none';
+        });
+
+        // Color changing functionality
+        colorInput.addEventListener('change', function() {
+            try {
+                document.body.style.backgroundColor = this.value;
+            } catch (error) {
+                alert('Invalid color! Try a color name or hex code.');
+            }
+        });
+
+        // Easter egg: allow changing color on input
+        colorInput.addEventListener('input', function() {
+            try {
+                document.body.style.backgroundColor = this.value;
+            } catch (error) {
+                // Silently fail for live typing
+            }
+        });
+
+        // Prevent zooming on mobile input focus
+        colorInput.addEventListener('focus', function() {
+            document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        });
+
+        colorInput.addEventListener('blur', function() {
+            document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0');
+        });
+    </script>
+</body>
+</html>
